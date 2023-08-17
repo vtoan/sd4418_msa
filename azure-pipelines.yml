@@ -38,8 +38,6 @@ stages:
   jobs:
   - deployment: Deploy
     displayName: Deploy
-    pool:
-      vmImage: $(vmImageName)
     environment: 'Test'
     strategy:
       runOnce:
