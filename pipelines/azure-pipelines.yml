@@ -15,7 +15,7 @@ resources:
 pool: Test Pool 1
 
 variables:
-  isSkipCI: true
+  isSkipCI: 'true'
 
   # tag: "$(Build.BuildId)"
   tag: "101"
