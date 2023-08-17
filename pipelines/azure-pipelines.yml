@@ -66,6 +66,7 @@ stages:
   jobs:
   - deployment: Deploy
     displayName: Deploy Frontend
+    environment: Test
     strategy:
       runOnce:
         deploy:
