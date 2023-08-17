@@ -6,7 +6,11 @@ trigger:
 - main
 
 resources:
-- repo: self
+  repositories:
+    - repository: infrasRepo
+      type: github
+      endpoint: vtoan
+      name: vtoan/sd4418_azure_infrastructure
 
 pool: Test Pool 1
 
@@ -14,22 +18,23 @@ variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '110dd676-90e9-404f-bc17-1ec5667c8b19'
   containerRegistry: 'examplearcdrum.azurecr.io'
-  # dockerfilePath: '$(Build.SourcesDirectory)/src/backend/Dockerfile'
+  imagePullSecret: "examplearcdrum-auth"
   tag: '$(Build.BuildId)'
-
+  # Frontend
   frontendImageName: 'msa-frontend'
   frontendPath: '$(Build.SourcesDirectory)/src/frontend'
-  
+  # Backend
   backendImageName: 'msa-backend'
   backendPath: '$(Build.SourcesDirectory)/src/backend'
 
 stages:
-- stage: BuildFE
+- stage: Build
   displayName: Build and push stage
   jobs:
-  - job: Build
+  - job: BuildFE
     displayName: Build Fontend
     steps:
+    - checkout: self
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
@@ -43,6 +48,7 @@ stages:
   - job: BuildBE
     displayName: Build Backend
     steps:
+    - checkout: self
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
@@ -52,3 +58,33 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy Frontend
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: infrasRepo
+            - task: KubernetesManifest@0
+              displayName: Create imagePullSecret
+              inputs:
+                action: createSecret
+                secretName: $(imagePullSecret)
+                dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+
+            - task: KubernetesManifest@0
+              displayName: Deploy to Kubernetes cluster
+              inputs:
+                action: deploy
+                manifests: |
+                  $(Build.SourcesDirectory)/manifests/frontend.yaml
+                imagePullSecrets: |
+                  $(imagePullSecret)
+                containers: |
+                  $(containerRegistry)/$(frontendImageName):$(tag)
