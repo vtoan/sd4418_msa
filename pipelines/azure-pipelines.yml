@@ -90,3 +90,5 @@ stages:
                   $(imagePullSecret)
                 containers: |
                   $(containerRegistry)/$(frontendImageName):$(tag)
+                kubernetesServiceConnection: cluster-concise-seasnail-default
+
