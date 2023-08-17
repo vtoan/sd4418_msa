@@ -9,7 +9,7 @@ resources:
   repositories:
     - repository: infrasRepo
       type: github
-      endpoint: vtoan
+      endpoint: github-vtoan
       name: vtoan/sd4418_azure_infrastructure
 
 pool: Test Pool 1
