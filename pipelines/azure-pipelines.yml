@@ -15,8 +15,6 @@ resources:
 pool: Test Pool 1
 
 variables:
-  isSkipCI: 'true'
-
   # tag: "$(Build.BuildId)"
   tag: "101"
 
@@ -34,37 +32,36 @@ variables:
   kubernetesServiceConnection: "testing-aks"
 
 stages:
-  - stage: Build
-    condition: eq(variables.isSkipCI, false)
-    displayName: Build and push stage
-    jobs:
-      - job: BuildFE
-        displayName: Build Frontend
-        steps:
-          - checkout: self
-          - task: Docker@2
-            displayName: Build and push an image to container registry
-            inputs:
-              command: buildAndPush
-              repository: $(frontendImageName)
-              dockerfile: $(frontendPath)/Dockerfile
-              containerRegistry: $(dockerRegistryServiceConnection)
-              tags: |
-                $(tag)
+  # - stage: Build
+  #   displayName: Build and push stage
+  #   jobs:
+  #     - job: BuildFE
+  #       displayName: Build Frontend
+  #       steps:
+  #         - checkout: self
+  #         - task: Docker@2
+  #           displayName: Build and push an image to container registry
+  #           inputs:
+  #             command: buildAndPush
+  #             repository: $(frontendImageName)
+  #             dockerfile: $(frontendPath)/Dockerfile
+  #             containerRegistry: $(dockerRegistryServiceConnection)
+  #             tags: |
+  #               $(tag)
 
-      - job: BuildBE
-        displayName: Build Backend
-        steps:
-          - checkout: self
-          - task: Docker@2
-            displayName: Build and push an image to container registry
-            inputs:
-              command: buildAndPush
-              repository: $(backendImageName)
-              dockerfile: $(backendPath)/Dockerfile
-              containerRegistry: $(dockerRegistryServiceConnection)
-              tags: |
-                $(tag)
+  #     - job: BuildBE
+  #       displayName: Build Backend
+  #       steps:
+  #         - checkout: self
+  #         - task: Docker@2
+  #           displayName: Build and push an image to container registry
+  #           inputs:
+  #             command: buildAndPush
+  #             repository: $(backendImageName)
+  #             dockerfile: $(backendPath)/Dockerfile
+  #             containerRegistry: $(dockerRegistryServiceConnection)
+  #             tags: |
+  #               $(tag)
 
   - stage: Deploy
     displayName: Deploy stage
