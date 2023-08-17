@@ -23,8 +23,8 @@ variables:
   backendImageName: "msa-backend"
   backendPath: "$(Build.SourcesDirectory)/src/backend"
 
-  containerRegistryUri: "examplearcdrum.azurecr.io"
-  imagePullSecret: "example-arc-drum-auth"
+  containerRegistryUri: "examplearchippo.azurecr.io"
+  imagePullSecret: "examplearchippo-auth"
 
   # Endpoints/Connections
   dockerRegistryServiceConnection: "testing-acr"
