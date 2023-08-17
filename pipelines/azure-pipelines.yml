@@ -33,7 +33,7 @@ stages:
   - stage: Build
     displayName: Build and push stage
     jobs:
-      - job: Build-FE
+      - job: BuildFE
         displayName: Build Frontend
         steps:
           - checkout: self
@@ -47,7 +47,7 @@ stages:
               tags: |
                 $(tag)
 
-      - job: Build-BE
+      - job: BuildBE
         displayName: Build Backend
         steps:
           - checkout: self
