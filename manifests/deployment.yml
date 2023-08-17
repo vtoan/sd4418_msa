@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: vtoansdmsa 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vtoansdmsa
+  template:
+    metadata:
+      labels:
+        app: vtoansdmsa 
+    spec:
+      containers:
+        - name: vtoansdmsa 
+          image: examplearcdrum.azurecr.io/vtoansdmsa
+          ports:
+          - containerPort: 3000
