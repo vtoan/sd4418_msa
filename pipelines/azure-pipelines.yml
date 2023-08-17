@@ -90,8 +90,7 @@ stages:
                     manifests: |
                       $(Build.SourcesDirectory)/manifests/frontend.yaml
                       $(Build.SourcesDirectory)/manifests/backend.yaml
-                      # $(Build.SourcesDirectory)/manifests/mongodb.yaml
-                      $(Build.SourcesDirectory)/manifests/ingress.yml
+                      $(Build.SourcesDirectory)/manifests/mongodb.yaml
                     imagePullSecrets: |
                       $(imagePullSecret)
                     containers: |
