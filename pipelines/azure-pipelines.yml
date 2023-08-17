@@ -18,12 +18,12 @@ variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '110dd676-90e9-404f-bc17-1ec5667c8b19'
   containerRegistry: 'examplearcdrum.azurecr.io'
-  imagePullSecret: "examplearcdrum-auth"
+  # imagePullSecret: "examplearcdrum-auth"
   tag: '$(Build.BuildId)'
-  # Frontend
+
   frontendImageName: 'msa-frontend'
   frontendPath: '$(Build.SourcesDirectory)/src/frontend'
-  # Backend
+
   backendImageName: 'msa-backend'
   backendPath: '$(Build.SourcesDirectory)/src/backend'
 
@@ -31,8 +31,8 @@ stages:
 - stage: Build
   displayName: Build and push stage
   jobs:
-  - job: BuildFE
-    displayName: Build Fontend
+  - job: Build
+    displayName: Build Frontend
     steps:
     - checkout: self
     - task: Docker@2
@@ -45,7 +45,7 @@ stages:
         tags: |
           $(tag)
   
-  - job: BuildBE
+  - job: Build
     displayName: Build Backend
     steps:
     - checkout: self
