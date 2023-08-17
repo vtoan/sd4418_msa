@@ -15,8 +15,7 @@ resources:
 pool: Test Pool 1
 
 variables:
-  # tag: "$(Build.BuildId)"
-  tag: "101"
+  tag: "$(Build.BuildId)"
 
   frontendImageName: "msa-frontend"
   frontendPath: "$(Build.SourcesDirectory)/src/frontend"
@@ -24,52 +23,52 @@ variables:
   backendImageName: "msa-backend"
   backendPath: "$(Build.SourcesDirectory)/src/backend"
 
-  containerRegistryUri: "examplearchippo.azurecr.io"
-  imagePullSecret: "examplearchippo-auth"
+  containerRegistryUri: "examplearcspider.azurecr.io"
+  imagePullSecret: "examplearcspider-auth"
 
   # Endpoints/Connections
   dockerRegistryServiceConnection: "testing-acr"
   kubernetesServiceConnection: "testing-aks"
 
 stages:
-  # - stage: Build
-  #   displayName: Build and push stage
-  #   jobs:
-  #     - job: BuildFE
-  #       displayName: Build Frontend
-  #       steps:
-  #         - checkout: self
-  #         - task: Docker@2
-  #           displayName: Build and push an image to container registry
-  #           inputs:
-  #             command: buildAndPush
-  #             repository: $(frontendImageName)
-  #             dockerfile: $(frontendPath)/Dockerfile
-  #             containerRegistry: $(dockerRegistryServiceConnection)
-  #             tags: |
-  #               $(tag)
+  - stage: Build
+    displayName: Build and push stage
+    jobs:
+      - job: BuildFE
+        displayName: Build Frontend
+        steps:
+          - checkout: self
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(frontendImageName)
+              dockerfile: $(frontendPath)/Dockerfile
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
 
-  #     - job: BuildBE
-  #       displayName: Build Backend
-  #       steps:
-  #         - checkout: self
-  #         - task: Docker@2
-  #           displayName: Build and push an image to container registry
-  #           inputs:
-  #             command: buildAndPush
-  #             repository: $(backendImageName)
-  #             dockerfile: $(backendPath)/Dockerfile
-  #             containerRegistry: $(dockerRegistryServiceConnection)
-  #             tags: |
-  #               $(tag)
+      - job: BuildBE
+        displayName: Build Backend
+        steps:
+          - checkout: self
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(backendImageName)
+              dockerfile: $(backendPath)/Dockerfile
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
 
   - stage: Deploy
     displayName: Deploy stage
-    # dependsOn: Build
+    dependsOn: Build
 
     jobs:
       - deployment: Deploy
-        displayName: Deploy Frontend
+        displayName: Deploy
         environment: Test
         strategy:
           runOnce:
@@ -91,12 +90,12 @@ stages:
                     manifests: |
                       $(Build.SourcesDirectory)/manifests/frontend.yaml
                       $(Build.SourcesDirectory)/manifests/backend.yaml
+                      # $(Build.SourcesDirectory)/manifests/mongodb.yaml
+                      $(Build.SourcesDirectory)/manifests/ingress.yml
                     imagePullSecrets: |
                       $(imagePullSecret)
                     containers: |
                       $(containerRegistryUri)/$(frontendImageName):$(tag)
                       $(containerRegistryUri)/$(backendImageName):$(tag)
                     kubernetesServiceConnection: $(kubernetesServiceConnection)
-
-                    # $(Build.SourcesDirectory)/manifests/mongodb.yaml
-                    # $(Build.SourcesDirectory)/manifests/ingress.yml
+               
