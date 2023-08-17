@@ -1,0 +1,70 @@
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+  repositories:
+    - repository: infrasRepo
+      type: github
+      endpoint: vtoan
+      name: vtoan/sd4418_azure_infrastructure
+
+pool: Test Pool 1
+
+variables:
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'bdf044dc-edd2-4bd6-9d5a-006036020582'
+  containerRegistry: 'examplearcdrum.azurecr.io'
+  # tag: '$(Build.BuildId)'
+  tag: '86'
+  imagePullSecret: 'examplearcdrum1808bddc-auth'
+  # Frontend
+  frontendImageName: 'msa-frontend'
+  frontendPath: '$(Build.SourcesDirectory)/src/frontend'
+  # Backend
+  backendImageName: 'msa-backend'
+  backendPath: '$(Build.SourcesDirectory)/src/backend'
+
+
+stages:
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'Test'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: infrasRepo
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
+            inputs:
+              action: createSecret
+              secretName: $(imagePullSecret)
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
+            inputs:
+              action: deploy
+              manifests: |
+                $(Build.SourcesDirectory)/manifests/frontend.yaml
+                $(Build.SourcesDirectory)/manifests/backend.yaml
+                $(Build.SourcesDirectory)/manifests/mongodb.yaml
+                $(Build.SourcesDirectory)/manifests/ingress.yml
+              imagePullSecrets: |
+                $(imagePullSecret)
+              containers: |
+                $(containerRegistry)/$(frontendImageName):$(tag)
+                $(containerRegistry)/$(backendImageName):$(tag)
+
