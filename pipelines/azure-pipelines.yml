@@ -16,7 +16,7 @@ pool: Test Pool 1
 
 variables:
   # Container registry service connection established during pipeline creation
-  kubernetesServiceConnection: 'cluster-concise-seasnail-default'
+  kubernetesServiceConnection: 'azure-res-manager'
   dockerRegistryServiceConnection: '110dd676-90e9-404f-bc17-1ec5667c8b19'
   containerRegistry: 'examplearcdrum.azurecr.io'
   imagePullSecret: 'example-arc-drum-auth'
