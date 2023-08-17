@@ -91,6 +91,7 @@ stages:
                       $(Build.SourcesDirectory)/manifests/frontend.yaml
                       $(Build.SourcesDirectory)/manifests/backend.yaml
                       $(Build.SourcesDirectory)/manifests/mongodb.yaml
+                      $(Build.SourcesDirectory)/manifests/ingress.yml
                     imagePullSecrets: |
                       $(imagePullSecret)
                     containers: |
