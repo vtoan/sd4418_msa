@@ -29,42 +29,42 @@ variables:
     kubernetesServiceConnection: 'testing-aks'
 
 stages:
-  # - stage: Build
-  #   displayName: Build and push stage
-  #   jobs:
-  #     - job: BuildFE
-  #       displayName: Build Frontend
-  #       steps:
-  #         - checkout: self
-  #         - task: Docker@2
-  #           displayName: Build and push an image to container registry
-  #           inputs:
-  #             command: buildAndPush
-  #             repository: $(frontendImageName)
-  #             dockerfile: $(frontendPath)/Dockerfile
-  #             containerRegistry: $(dockerRegistryServiceConnection)
-  #             tags: |
-  #               $(tag)
-  #               latest
+  - stage: Build
+    displayName: Build and push stage
+    jobs:
+      - job: BuildFE
+        displayName: Build Frontend
+        steps:
+          - checkout: self
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(frontendImageName)
+              dockerfile: $(frontendPath)/Dockerfile
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
 
-  #     - job: BuildBE
-  #       displayName: Build Backend
-  #       steps:
-  #         - checkout: self
-  #         - task: Docker@2
-  #           displayName: Build and push an image to container registry
-  #           inputs:
-  #             command: buildAndPush
-  #             repository: $(backendImageName)
-  #             dockerfile: $(backendPath)/Dockerfile
-  #             containerRegistry: $(dockerRegistryServiceConnection)
-  #             tags: |
-  #               $(tag)
-  #               latest
+      - job: BuildBE
+        displayName: Build Backend
+        steps:
+          - checkout: self
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(backendImageName)
+              dockerfile: $(backendPath)/Dockerfile
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
 
   - stage: Deploy
     displayName: Deploy stage
-    # dependsOn: Build
+    dependsOn: Build
 
     jobs:
       - deployment: Deploy
@@ -76,6 +76,7 @@ stages:
               steps:
                 - checkout: infrasRepo
                   persistCredentials: true
+                  # Update manifest in gitops
                 - task: Bash@3
                   inputs:
                     targetType: 'inline'
