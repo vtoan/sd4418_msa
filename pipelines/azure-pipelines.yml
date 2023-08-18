@@ -85,7 +85,7 @@ stages:
                       sed -i 's/msa-backend:.*/msa-backend:${tag}/g' backend.yaml
                       git add . 
                       git commit -m "Update to version ${tag}"
-                      git push https://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@github.com/vtoan/sd4418_azure_infrastructure.git HEAD:main
+                      git push origin HEAD:main
                     workingDirectory: '$(Build.SourcesDirectory)/manifests/'
 
                 # - task: KubernetesManifest@0
