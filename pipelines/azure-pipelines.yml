@@ -15,20 +15,18 @@ resources:
 pool: Test Pool 1
 
 variables:
-  tag: "$(Build.BuildId)"
+    frontendImageName: 'msa-frontend'
+    frontendPath: '$(Build.SourcesDirectory)/src/frontend'
 
-  frontendImageName: "msa-frontend"
-  frontendPath: "$(Build.SourcesDirectory)/src/frontend"
+    backendImageName: 'msa-backend'
+    backendPath: '$(Build.SourcesDirectory)/src/backend'
 
-  backendImageName: "msa-backend"
-  backendPath: "$(Build.SourcesDirectory)/src/backend"
+    containerRegistryUri: 'examplearcmollusk.azurecr.io'
+    imagePullSecret: 'examplearcmollusk-auth'
 
-  containerRegistryUri: "examplearcbuzzard.azurecr.io"
-  imagePullSecret: "examplearcbuzzard-auth"
-
-  # Endpoints/Connections
-  dockerRegistryServiceConnection: "testing-acr"
-  kubernetesServiceConnection: "testing-aks"
+    # Endpoints/Connections
+    dockerRegistryServiceConnection: 'testing-acr'
+    kubernetesServiceConnection: 'testing-aks'
 
 stages:
   - stage: Build
