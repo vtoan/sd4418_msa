@@ -29,42 +29,42 @@ variables:
     kubernetesServiceConnection: 'testing-aks'
 
 stages:
-  - stage: Build
-    displayName: Build and push stage
-    jobs:
-      - job: BuildFE
-        displayName: Build Frontend
-        steps:
-          - checkout: self
-          - task: Docker@2
-            displayName: Build and push an image to container registry
-            inputs:
-              command: buildAndPush
-              repository: $(frontendImageName)
-              dockerfile: $(frontendPath)/Dockerfile
-              containerRegistry: $(dockerRegistryServiceConnection)
-              tags: |
-                $(tag)
-                latest
+  # - stage: Build
+  #   displayName: Build and push stage
+  #   jobs:
+  #     - job: BuildFE
+  #       displayName: Build Frontend
+  #       steps:
+  #         - checkout: self
+  #         - task: Docker@2
+  #           displayName: Build and push an image to container registry
+  #           inputs:
+  #             command: buildAndPush
+  #             repository: $(frontendImageName)
+  #             dockerfile: $(frontendPath)/Dockerfile
+  #             containerRegistry: $(dockerRegistryServiceConnection)
+  #             tags: |
+  #               $(tag)
+  #               latest
 
-      - job: BuildBE
-        displayName: Build Backend
-        steps:
-          - checkout: self
-          - task: Docker@2
-            displayName: Build and push an image to container registry
-            inputs:
-              command: buildAndPush
-              repository: $(backendImageName)
-              dockerfile: $(backendPath)/Dockerfile
-              containerRegistry: $(dockerRegistryServiceConnection)
-              tags: |
-                $(tag)
-                latest
+  #     - job: BuildBE
+  #       displayName: Build Backend
+  #       steps:
+  #         - checkout: self
+  #         - task: Docker@2
+  #           displayName: Build and push an image to container registry
+  #           inputs:
+  #             command: buildAndPush
+  #             repository: $(backendImageName)
+  #             dockerfile: $(backendPath)/Dockerfile
+  #             containerRegistry: $(dockerRegistryServiceConnection)
+  #             tags: |
+  #               $(tag)
+  #               latest
 
   - stage: Deploy
     displayName: Deploy stage
-    dependsOn: Build
+    # dependsOn: Build
 
     jobs:
       - deployment: Deploy
@@ -79,11 +79,13 @@ stages:
                   inputs:
                     targetType: 'inline'
                     script: |
+                      git config --global user.email "you@example.com"
+                      git config --global user.name "Your Name"
                       sed -i 's/msa-frontend:.*/msa-frontend:${tag}/g' frontend.yaml
                       sed -i 's/msa-backend:.*/msa-backend:${tag}/g' backend.yaml
                       git add . 
                       git commit -m "Update to version ${tag}"
-                      git push https://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@github.com/vtoan/sd4418_azure_infrastructure.git
+                      git push https://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@github.com/vtoan/sd4418_azure_infrastructure.git HEAD:main
                     workingDirectory: '$(Build.SourcesDirectory)/manifests/'
 
                 # - task: KubernetesManifest@0
