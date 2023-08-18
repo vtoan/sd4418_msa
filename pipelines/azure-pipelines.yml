@@ -75,26 +75,37 @@ stages:
             deploy:
               steps:
                 - checkout: infrasRepo
-                - task: KubernetesManifest@0
-                  displayName: Create imagePullSecret
+                - task: Bash@3
                   inputs:
-                    action: createSecret
-                    secretName: $(imagePullSecret)
-                    dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-                    kubernetesServiceConnection: $(kubernetesServiceConnection)
+                    targetType: 'inline'
+                    script: |
+                      sed -i 's/msa-frontend:.*/msa-frontend:${tag}/g' frontend.yaml
+                      sed -i 's/msa-backend:.*/msa-backend:${tag}/g' backend.yaml
+                      git add . 
+                      git commit -m "Update to version ${tag}"
+                      git push https://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@github.com/vtoan/sd4418_azure_infrastructure.git
+                    workingDirectory: '$(Build.SourcesDirectory)/manifests/'
 
-                - task: KubernetesManifest@0
-                  displayName: Deploy to Kubernetes cluster
-                  inputs:
-                    action: deploy
-                    manifests: |
-                      $(Build.SourcesDirectory)/manifests/frontend.yaml
-                      $(Build.SourcesDirectory)/manifests/backend.yaml
-                      $(Build.SourcesDirectory)/manifests/mongodb.yaml
-                      $(Build.SourcesDirectory)/manifests/ingress.yml
-                    imagePullSecrets: |
-                      $(imagePullSecret)
-                    containers: |
-                      $(containerRegistryUri)/$(frontendImageName):$(tag)
-                      $(containerRegistryUri)/$(backendImageName):$(tag)
-                    kubernetesServiceConnection: $(kubernetesServiceConnection)
+                # - task: KubernetesManifest@0
+                #   displayName: Create imagePullSecret
+                #   inputs:
+                #     action: createSecret
+                #     secretName: $(imagePullSecret)
+                #     dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+                #     kubernetesServiceConnection: $(kubernetesServiceConnection)
+
+                # - task: KubernetesManifest@0
+                #   displayName: Deploy to Kubernetes cluster
+                #   inputs:
+                #     action: deploy
+                #     manifests: |
+                #       $(Build.SourcesDirectory)/manifests/frontend.yaml
+                #       $(Build.SourcesDirectory)/manifests/backend.yaml
+                #       $(Build.SourcesDirectory)/manifests/mongodb.yaml
+                #       $(Build.SourcesDirectory)/manifests/ingress.yml
+                #     imagePullSecrets: |
+                #       $(imagePullSecret)
+                #     containers: |
+                #       $(containerRegistryUri)/$(frontendImageName):$(tag)
+                #       $(containerRegistryUri)/$(backendImageName):$(tag)
+                #     kubernetesServiceConnection: $(kubernetesServiceConnection)
