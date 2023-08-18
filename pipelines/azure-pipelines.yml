@@ -23,8 +23,8 @@ variables:
   backendImageName: "msa-backend"
   backendPath: "$(Build.SourcesDirectory)/src/backend"
 
-  containerRegistryUri: "examplearcspider.azurecr.io"
-  imagePullSecret: "examplearcspider-auth"
+  containerRegistryUri: "examplearcbuzzard.azurecr.io"
+  imagePullSecret: "examplearcbuzzard-auth"
 
   # Endpoints/Connections
   dockerRegistryServiceConnection: "testing-acr"
@@ -98,4 +98,3 @@ stages:
                       $(containerRegistryUri)/$(frontendImageName):$(tag)
                       $(containerRegistryUri)/$(backendImageName):$(tag)
                     kubernetesServiceConnection: $(kubernetesServiceConnection)
-               
