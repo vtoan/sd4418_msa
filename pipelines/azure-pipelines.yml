@@ -82,10 +82,10 @@ stages:
                     script: |
                       git config --global user.email "dtoan2805@gmail.com"
                       git config --global user.name "Toan Dang"
-                      sed -i 's/msa-frontend:.*/msa-frontend:${tag}/g' frontend.yaml
-                      sed -i 's/msa-backend:.*/msa-backend:${tag}/g' backend.yaml
+                      sed -i 's/msa-frontend:.*/msa-frontend:$(tag)/g' frontend.yaml
+                      sed -i 's/msa-backend:.*/msa-backend:$(tag)/g' backend.yaml
                       git add . 
-                      git commit -m "Update to version ${tag}"
+                      git commit -m "Update to version $(tag)"
                       git push origin HEAD:main
                     workingDirectory: '$(Build.SourcesDirectory)/manifests/'
 
