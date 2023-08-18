@@ -47,6 +47,7 @@ stages:
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
                 $(tag)
+                latest
 
       - job: BuildBE
         displayName: Build Backend
@@ -61,6 +62,7 @@ stages:
               containerRegistry: $(dockerRegistryServiceConnection)
               tags: |
                 $(tag)
+                latest
 
   - stage: Deploy
     displayName: Deploy stage
