@@ -21,8 +21,8 @@ variables:
     backendImageName: 'msa-backend'
     backendPath: '$(Build.SourcesDirectory)/src/backend'
 
-    containerRegistryUri: 'examplearcmollusk.azurecr.io'
-    imagePullSecret: 'examplearcmollusk-auth'
+    containerRegistryUri: 'examplearcgoose.azurecr.io'
+    imagePullSecret: 'examplearcgoose-auth'
 
     # Endpoints/Connections
     dockerRegistryServiceConnection: 'testing-acr'
