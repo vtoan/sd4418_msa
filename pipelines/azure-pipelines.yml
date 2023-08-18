@@ -75,12 +75,13 @@ stages:
             deploy:
               steps:
                 - checkout: infrasRepo
+                  persistCredentials: true
                 - task: Bash@3
                   inputs:
                     targetType: 'inline'
                     script: |
-                      git config --global user.email "you@example.com"
-                      git config --global user.name "Your Name"
+                      git config --global user.email "dtoan2805@gmail.com"
+                      git config --global user.name "Toan Dang"
                       sed -i 's/msa-frontend:.*/msa-frontend:${tag}/g' frontend.yaml
                       sed -i 's/msa-backend:.*/msa-backend:${tag}/g' backend.yaml
                       git add . 
