@@ -9,7 +9,7 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
-      todos: [],
+      todos: []
     };
   }
 
@@ -18,7 +18,7 @@ export default class App extends React.Component {
       .get("/api")
       .then((response) => {
         this.setState({
-          todos: response.data.data,
+          todos: response.data.data
         });
       })
       .catch((e) => console.log("Error : ", e));
@@ -29,7 +29,7 @@ export default class App extends React.Component {
       .post("/api/todos", { text: value })
       .then(() => {
         this.setState({
-          todos: [...this.state.todos, { text: value }],
+          todos: [...this.state.todos, { text: value }]
         });
       })
       .catch((e) => console.log("Error : ", e));
@@ -41,7 +41,7 @@ export default class App extends React.Component {
         <div className="container-fluid">
           <div className="row">
             <div className="col-xs-12 col-sm-8 col-md-8 offset-md-2">
-              <h1>Todos</h1>
+              <h1>Todos v1</h1>
               <div className="todo-app">
                 <AddTodo handleAddTodo={this.handleAddTodo} />
                 <TodoList todos={this.state.todos} />
