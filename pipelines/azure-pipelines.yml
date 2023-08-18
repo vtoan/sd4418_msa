@@ -15,10 +15,6 @@ resources:
 pool: Test Pool 1
 
 variables:
-  - name: tag
-    value: '$(Build.BuildId)'
-    readonly: true
-
     frontendImageName: 'msa-frontend'
     frontendPath: '$(Build.SourcesDirectory)/src/frontend'
 
