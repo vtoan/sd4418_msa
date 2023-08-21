@@ -15,18 +15,18 @@ resources:
 pool: Test Pool 1
 
 variables:
-  frontendImageName: 'msa-frontend'
-  frontendPath: '$(Build.SourcesDirectory)/src/frontend'
+  frontendImageName: "msa-frontend"
+  frontendPath: "$(Build.SourcesDirectory)/src/frontend"
 
-  backendImageName: 'msa-backend'
-  backendPath: '$(Build.SourcesDirectory)/src/backend'
+  backendImageName: "msa-backend"
+  backendPath: "$(Build.SourcesDirectory)/src/backend"
 
-  containerRegistryUri: 'examplearcgoose.azurecr.io'
-  imagePullSecret: 'examplearcgoose-auth'
+  containerRegistryUri: "examplearcllama.azurecr.io"
+  imagePullSecret: "examplearcllama-auth"
 
   # Endpoints/Connections
-  dockerRegistryServiceConnection: 'testing-acr'
-  kubernetesServiceConnection: 'testing-aks'
+  dockerRegistryServiceConnection: "testing-acr"
+  kubernetesServiceConnection: "testing-aks"
 
 stages:
   - stage: Build
