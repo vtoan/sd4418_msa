@@ -15,18 +15,18 @@ resources:
 pool: Test Pool 1
 
 variables:
-    frontendImageName: 'msa-frontend'
-    frontendPath: '$(Build.SourcesDirectory)/src/frontend'
+  frontendImageName: 'msa-frontend'
+  frontendPath: '$(Build.SourcesDirectory)/src/frontend'
 
-    backendImageName: 'msa-backend'
-    backendPath: '$(Build.SourcesDirectory)/src/backend'
+  backendImageName: 'msa-backend'
+  backendPath: '$(Build.SourcesDirectory)/src/backend'
 
-    containerRegistryUri: 'examplearcgoose.azurecr.io'
-    imagePullSecret: 'examplearcgoose-auth'
+  containerRegistryUri: 'examplearcgoose.azurecr.io'
+  imagePullSecret: 'examplearcgoose-auth'
 
-    # Endpoints/Connections
-    dockerRegistryServiceConnection: 'testing-acr'
-    kubernetesServiceConnection: 'testing-aks'
+  # Endpoints/Connections
+  dockerRegistryServiceConnection: 'testing-acr'
+  kubernetesServiceConnection: 'testing-aks'
 
 stages:
   - stage: Build
@@ -62,54 +62,54 @@ stages:
                 $(tag)
                 latest
 
-  # - stage: Deploy
-  #   displayName: Deploy stage
-  #   dependsOn: Build
+  - stage: Deploy
+    displayName: Deploy stage
+    dependsOn: Build
 
-  #   jobs:
-  #     - deployment: Deploy
-  #       displayName: Deploy
-  #       environment: Test
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #               - checkout: infrasRepo
-  #                 persistCredentials: true
-  #                 # Update manifest in gitops
-  #               - task: Bash@3
-  #                 inputs:
-  #                   targetType: 'inline'
-  #                   script: |
-  #                     git config --global user.email "dtoan2805@gmail.com"
-  #                     git config --global user.name "Toan Dang"
-  #                     sed -i 's/msa-frontend:.*/msa-frontend:$(tag)/g' frontend.yaml
-  #                     sed -i 's/msa-backend:.*/msa-backend:$(tag)/g' backend.yaml
-  #                     git add . 
-  #                     git commit -m "Update to version $(tag)"
-  #                     git push origin HEAD:main
-  #                   workingDirectory: '$(Build.SourcesDirectory)/manifests/'
-
-                # - task: KubernetesManifest@0
-                #   displayName: Create imagePullSecret
+    jobs:
+      - deployment: Deploy
+        displayName: Deploy
+        environment: Test
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: infrasRepo
+                  persistCredentials: true
+                  # Update manifest in gitops
+                # - task: Bash@3
                 #   inputs:
-                #     action: createSecret
-                #     secretName: $(imagePullSecret)
-                #     dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-                #     kubernetesServiceConnection: $(kubernetesServiceConnection)
+                #     targetType: 'inline'
+                #     script: |
+                #       git config --global user.email "dtoan2805@gmail.com"
+                #       git config --global user.name "Toan Dang"
+                #       sed -i 's/msa-frontend:.*/msa-frontend:$(tag)/g' frontend.yaml
+                #       sed -i 's/msa-backend:.*/msa-backend:$(tag)/g' backend.yaml
+                #       git add .
+                #       git commit -m "Update to version $(tag)"
+                #       git push origin HEAD:main
+                #     workingDirectory: '$(Build.SourcesDirectory)/manifests/'
 
-                # - task: KubernetesManifest@0
-                #   displayName: Deploy to Kubernetes cluster
-                #   inputs:
-                #     action: deploy
-                #     manifests: |
-                #       $(Build.SourcesDirectory)/manifests/frontend.yaml
-                #       $(Build.SourcesDirectory)/manifests/backend.yaml
-                #       $(Build.SourcesDirectory)/manifests/mongodb.yaml
-                #       $(Build.SourcesDirectory)/manifests/ingress.yml
-                #     imagePullSecrets: |
-                #       $(imagePullSecret)
-                #     containers: |
-                #       $(containerRegistryUri)/$(frontendImageName):$(tag)
-                #       $(containerRegistryUri)/$(backendImageName):$(tag)
-                #     kubernetesServiceConnection: $(kubernetesServiceConnection)
+                - task: KubernetesManifest@0
+                  displayName: Create imagePullSecret
+                  inputs:
+                    action: createSecret
+                    secretName: $(imagePullSecret)
+                    dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+                    kubernetesServiceConnection: $(kubernetesServiceConnection)
+
+                - task: KubernetesManifest@0
+                  displayName: Deploy to Kubernetes cluster
+                  inputs:
+                    action: deploy
+                    manifests: |
+                      $(Build.SourcesDirectory)/manifests/frontend.yaml
+                      $(Build.SourcesDirectory)/manifests/backend.yaml
+                      $(Build.SourcesDirectory)/manifests/mongodb.yaml
+                      $(Build.SourcesDirectory)/manifests/ingress.yml
+                    imagePullSecrets: |
+                      $(imagePullSecret)
+                    containers: |
+                      $(containerRegistryUri)/$(frontendImageName):$(tag)
+                      $(containerRegistryUri)/$(backendImageName):$(tag)
+                    kubernetesServiceConnection: $(kubernetesServiceConnection)
